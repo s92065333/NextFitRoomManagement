@@ -1,0 +1,95 @@
+﻿@model List<Room>
+
+@{
+    ViewBag.Title = "Room Allocation System";
+}
+
+<h3>Room Allocation System</h3>
+
+<section>
+    <h4>Available Rooms</h4>
+    @if (Model == null || !Model.Any())
+    {
+        <p>No rooms available at the moment.</p>
+    }
+    else
+    {
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <thead>
+                <tr style="background-color: #f2f2f2;text-align: center;">
+                    <th style="border: 1px solid #ddd; padding: 8px;">Room ID</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">Capacity</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">Is Allocated</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var room in Model)
+                {
+                    <tr style="text-align: center;">
+                        <td style="border: 1px solid #ddd; padding: 15px;">@room.Id</td>
+                        <td style="border: 1px solid #ddd; padding: 15px;">@room.Capacity</td>
+                        <td style="border: 1px solid #ddd; padding: 15px;">
+                            @(room.IsAllocated ? "Yes" : "No")
+                        </td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">
+                            @if (room.IsAllocated)
+                            {
+                                <form method="post" asp-action="DeallocateRoom" style="display: inline;">
+                                    <input type="hidden" name="roomId" value="@room.Id" />
+                                    <button type="submit" style="padding: 5px 10px; background-color: #e74c3c; color: white; border: none; cursor: pointer;">
+                                        Deallocate
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+<section style="margin-top: 20px;">
+    <h4>Allocate a Room</h4>
+    <form method="post" asp-action="AllocateRoom" style="margin-top: 10px;">
+        <div style="margin-bottom: 10px;">
+            <label for="groupSize" style="margin-right: 10px;">Group Size:</label>
+            <input type="number" id="groupSize" name="GroupSize" required
+                   style="padding: 5px; width: 100px; border: 1px solid #ccc; border-radius: 5px;" />
+        </div>
+        <button type="submit" style="padding: 8px 15px; background-color: #2ecc71; color: white; border: none; cursor: pointer;">
+            Allocate
+        </button>
+    </form>
+
+    <!-- Status Message Section -->
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div style="margin-top: 20px; font-size: 16px; color: green;">
+            @TempData["StatusMessage"]
+        </div>
+    }
+</section>
+
+<style>
+    h1, h2 {
+        font-family: Arial, sans-serif;
+        color: #34495e;
+    }
+
+    table {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    button {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #27ae60;
+    }
+</style>
